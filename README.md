@@ -1,0 +1,184 @@
+# UserJot Swift SDK
+
+> **Beta Notice**: This SDK is currently in beta (v0.1.0). The API may change before the 1.0 release.
+
+A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and changelog features into your iOS and macOS applications.
+
+## Installation
+
+### Swift Package Manager
+
+Add the following to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/UserJot/userjot-ios", from: "0.1.0")
+]
+```
+
+Or in Xcode:
+1. File → Add Package Dependencies
+2. Enter: `https://github.com/UserJot/userjot-ios`
+3. Click Add Package
+
+## Quick Start
+
+### 1. Setup
+
+Initialize UserJot with your project ID (found in your UserJot dashboard):
+
+```swift
+import UserJot
+
+// In your AppDelegate or App struct
+UserJot.setup(projectId: "your-project-id")
+```
+
+### 2. Identify Users
+
+Identify users to enable personalized feedback tracking:
+
+```swift
+// Minimal identification (only userId required)
+UserJot.identify(userId: "user123")
+
+// With email
+UserJot.identify(
+    userId: "user123",
+    email: "user@example.com"
+)
+
+// With additional details
+UserJot.identify(
+    userId: "user123",
+    email: "user@example.com",
+    firstName: "John",
+    lastName: "Doe",
+    avatar: "https://example.com/avatar.jpg"
+)
+
+// With server-side signature for secure authentication
+UserJot.identify(
+    userId: "user123",
+    email: "user@example.com",
+    signature: signatureFromYourServer // HMAC-SHA256 signature
+)
+```
+
+### 3. Show UserJot Views
+
+Display feedback, roadmap, or changelog in a native iOS sheet:
+
+```swift
+// Show feedback sheet (default)
+UserJot.showFeedback()
+
+// Show feedback for specific board
+UserJot.showFeedback(board: "feature-requests")
+
+// Show with different presentation styles
+UserJot.showFeedback()                                 // Default large sheet
+UserJot.showFeedback(presentationStyle: .mediumSheet) // Medium height sheet (iOS 15+)
+
+// Show roadmap
+UserJot.showRoadmap()
+
+// Show changelog
+UserJot.showChangelog()
+```
+
+**Note**: By default, views are presented as native iOS sheets with a drag indicator at the top. Users can dismiss by dragging down or the sheet will automatically dismiss when they complete an action.
+
+## Advanced Usage
+
+### Custom Implementation
+
+If you prefer to handle the presentation yourself, you can get the URLs:
+
+```swift
+// Get URLs for custom WebView implementation
+let feedbackURL = UserJot.feedbackURL()
+let roadmapURL = UserJot.roadmapURL()
+let changelogURL = UserJot.changelogURL()
+
+// Use with your own WebView
+if let url = feedbackURL {
+    // Present your custom WebView with url
+}
+```
+
+### SwiftUI Support
+
+For SwiftUI apps, use the provided view:
+
+```swift
+import SwiftUI
+import UserJot
+
+struct ContentView: View {
+    @State private var showingFeedback = false
+
+    var body: some View {
+        Button("Send Feedback") {
+            showingFeedback = true
+        }
+        .userJotFeedback(isPresented: $showingFeedback)
+    }
+}
+```
+
+### Logout
+
+Clear user identification when users log out:
+
+```swift
+UserJot.logout()
+```
+
+## Server-Side Signature (Optional)
+
+For enhanced security, generate HMAC-SHA256 signatures on your server:
+
+```javascript
+// Node.js example
+const crypto = require('crypto');
+
+function generateSignature(userId, secret) {
+    return crypto
+        .createHmac('sha256', secret)
+        .update(userId)
+        .digest('hex');
+}
+```
+
+Then pass the signature to the identify method:
+
+```swift
+UserJot.identify(
+    userId: "user123",
+    email: "user@example.com",
+    signature: signatureFromServer
+)
+```
+
+## Requirements
+
+- iOS 13.0+ / macOS 10.15+
+- Swift 5.5+
+- Xcode 13.0+
+
+## Features
+
+- **Simple Integration**: Just two method calls to get started
+- **Native Modal Presentation**: Built-in WebView modal for iOS
+- **SwiftUI Support**: Native SwiftUI components
+- **Type-Safe**: Full Swift type safety
+- **Secure Authentication**: Optional HMAC-SHA256 signature support
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Support
+
+For issues or questions, visit [UserJot](https://userjot.com) or email shayan@userjot.com.

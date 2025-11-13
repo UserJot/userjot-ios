@@ -76,18 +76,23 @@ UserJot.showFeedback()
 // Show feedback for specific board
 UserJot.showFeedback(board: "feature-requests")
 
-// Show with different presentation styles
-UserJot.showFeedback()                                 // Default large sheet
+// Presentation styles
+UserJot.showFeedback()                                // Default: large sheet
+UserJot.showFeedback(presentationStyle: .sheet)       // Explicitly set large sheet
 UserJot.showFeedback(presentationStyle: .mediumSheet) // Medium height sheet (iOS 15+)
 
 // Show roadmap
 UserJot.showRoadmap()
+UserJot.showRoadmap(presentationStyle: .mediumSheet)
 
 // Show changelog
 UserJot.showChangelog()
+UserJot.showChangelog(presentationStyle: .mediumSheet)
 ```
 
-**Note**: By default, views are presented as native iOS sheets with a drag indicator at the top. Users can dismiss by dragging down or the sheet will automatically dismiss when they complete an action.
+**Note**: Views are presented as native iOS sheets with a drag indicator at the top. Users can dismiss by dragging down. Two presentation styles are available:
+- `.sheet` (default) - Full height sheet
+- `.mediumSheet` - Medium height sheet that can be expanded by the user (iOS 15+)
 
 ## Advanced Usage
 

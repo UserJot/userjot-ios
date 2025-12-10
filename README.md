@@ -1,6 +1,6 @@
 # UserJot Swift SDK
 
-> **Beta Notice**: This SDK is currently in beta (v0.1.0). The API may change before the 1.0 release.
+> **Beta Notice**: This SDK is currently in beta (v0.2.0). The API may change before the 1.0 release.
 
 A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and changelog features into your iOS and macOS applications.
 
@@ -12,7 +12,7 @@ Add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/UserJot/userjot-ios", from: "0.1.0")
+    .package(url: "https://github.com/UserJot/userjot-ios", from: "0.2.0")
 ]
 ```
 

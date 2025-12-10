@@ -67,32 +67,44 @@ UserJot.identify(
 
 ### 3. Show UserJot Views
 
-Display feedback, roadmap, or changelog in a native iOS sheet:
+Display feedback, roadmap, or changelog:
 
 ```swift
-// Show feedback sheet (default)
+// Show feedback (default)
 UserJot.showFeedback()
 
 // Show feedback for specific board
 UserJot.showFeedback(board: "feature-requests")
 
-// Presentation styles
-UserJot.showFeedback()                                // Default: large sheet
-UserJot.showFeedback(presentationStyle: .sheet)       // Explicitly set large sheet
-UserJot.showFeedback(presentationStyle: .mediumSheet) // Medium height sheet (iOS 15+)
-
 // Show roadmap
 UserJot.showRoadmap()
-UserJot.showRoadmap(presentationStyle: .mediumSheet)
 
 // Show changelog
 UserJot.showChangelog()
-UserJot.showChangelog(presentationStyle: .mediumSheet)
 ```
 
-**Note**: Views are presented as native iOS sheets with a drag indicator at the top. Users can dismiss by dragging down. Two presentation styles are available:
-- `.sheet` (default) - Full height sheet
-- `.mediumSheet` - Medium height sheet that can be expanded by the user (iOS 15+)
+#### iOS Presentation
+
+On iOS, views are presented as native sheets with a drag indicator. Two presentation styles are available:
+
+```swift
+UserJot.showFeedback()                                // Default: large sheet
+UserJot.showFeedback(presentationStyle: .sheet)       // Full height sheet
+UserJot.showFeedback(presentationStyle: .mediumSheet) // Medium height sheet (iOS 15+)
+```
+
+Users can dismiss by dragging down.
+
+#### macOS Presentation
+
+On macOS, views are presented in a separate resizable window. The window opens centered on screen at a comfortable size (896px wide, 80% of screen height).
+
+**Note for sandboxed macOS apps**: You must enable network access in your entitlements:
+
+```xml
+<key>com.apple.security.network.client</key>
+<true/>
+```
 
 ## Advanced Usage
 
@@ -175,8 +187,9 @@ UserJot.identify(
 ## Features
 
 - **Simple Integration**: Just two method calls to get started
-- **Native Modal Presentation**: Built-in WebView modal for iOS
-- **SwiftUI Support**: Native SwiftUI components
+- **Cross-Platform**: Native support for both iOS and macOS
+- **Native Presentation**: iOS sheets and macOS windows
+- **SwiftUI Support**: Native SwiftUI view modifier (iOS)
 - **Type-Safe**: Full Swift type safety
 - **Secure Authentication**: Optional HMAC-SHA256 signature support
 

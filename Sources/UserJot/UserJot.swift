@@ -2,6 +2,9 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 import WebKit
+#elseif canImport(AppKit)
+import AppKit
+import WebKit
 #endif
 
 // MARK: - UserJot Main Class
@@ -12,6 +15,9 @@ public class UserJot {
     private var config: Configuration?
     private var currentUser: User?
     private var publicBaseUrl: String?
+    #if canImport(AppKit) && !targetEnvironment(macCatalyst)
+    private var currentWindow: NSWindow?
+    #endif
 
     private init() {}
 
@@ -199,12 +205,12 @@ public class UserJot {
     }
 
     private func showWebView(section: Section, presentationStyle: PresentationStyle = .sheet) {
-        #if canImport(UIKit)
         guard let url = buildURL(section: section) else {
             print("UserJot: Unable to build URL")
             return
         }
 
+        #if canImport(UIKit)
         DispatchQueue.main.async {
             guard let windowScene = UIApplication.shared.connectedScenes
                 .compactMap({ $0 as? UIWindowScene })
@@ -242,8 +248,44 @@ public class UserJot {
 
             topController.present(webViewController, animated: true)
         }
+        #elseif canImport(AppKit)
+        DispatchQueue.main.async {
+            // Calculate size based on screen
+            let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1024, height: 768)
+
+            // Width: 896px (Tailwind max-w-4xl), Height: 80% of screen, min 500px
+            let width: CGFloat = 896
+            let height: CGFloat = max(500, screen.size.height * 0.8)
+
+            // Center the window on screen
+            let x = screen.origin.x + (screen.size.width - width) / 2
+            let y = screen.origin.y + (screen.size.height - height) / 2
+
+            let window = NSWindow(
+                contentRect: NSRect(x: x, y: y, width: width, height: height),
+                styleMask: [.titled, .closable, .resizable],
+                backing: .buffered,
+                defer: false
+            )
+
+            window.title = "UserJot"
+            window.minSize = NSSize(width: 400, height: 400)
+            window.isReleasedWhenClosed = false
+
+            let webViewController = UserJotMacWebViewController(url: url)
+            window.contentViewController = webViewController
+
+            // Ensure the window size is set correctly
+            window.setContentSize(NSSize(width: width, height: height))
+            window.center()
+
+            window.makeKeyAndOrderFront(nil)
+
+            // Keep a reference so window doesn't get deallocated
+            UserJot.shared.currentWindow = window
+        }
         #else
-        print("UserJot: WebView is only available on iOS")
+        print("UserJot: Platform not supported")
         #endif
     }
 }
@@ -436,6 +478,74 @@ public extension View {
         self.sheet(isPresented: isPresented) {
             UserJotFeedbackView(board: board)
         }
+    }
+}
+#endif
+
+// MARK: - macOS Web View Controller
+
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+@available(macOS 10.15, *)
+class UserJotMacWebViewController: NSViewController {
+    private let url: URL
+    private var webView: WKWebView!
+
+    init(url: URL) {
+        self.url = url
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func loadView() {
+        // Configure web view
+        let configuration = WKWebViewConfiguration()
+        webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.navigationDelegate = self
+        webView.autoresizingMask = [.width, .height]
+
+        // Set custom user agent
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let osVersion = ProcessInfo.processInfo.operatingSystemVersion
+        let osVersionString = "\(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)"
+        webView.customUserAgent = "UserJotSDK/1.0 (macOS; \(osVersionString); AppVersion/\(appVersion))"
+
+        self.view = webView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadURL()
+    }
+
+    private func loadURL() {
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
+}
+
+// MARK: - WKNavigationDelegate (macOS)
+
+@available(macOS 10.15, *)
+extension UserJotMacWebViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        let alert = NSAlert()
+        alert.messageText = "Error"
+        alert.informativeText = "Failed to load UserJot: \(error.localizedDescription)"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        let alert = NSAlert()
+        alert.messageText = "Error"
+        alert.informativeText = "Failed to load UserJot: \(error.localizedDescription)"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 }
 #endif

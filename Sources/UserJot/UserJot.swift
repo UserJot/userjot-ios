@@ -504,6 +504,7 @@ class UserJotMacWebViewController: NSViewController {
         let configuration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         webView.autoresizingMask = [.width, .height]
 
         // Set custom user agent
@@ -546,6 +547,27 @@ extension UserJotMacWebViewController: WKNavigationDelegate {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "OK")
         alert.runModal()
+    }
+}
+
+// MARK: - WKUIDelegate (macOS)
+
+@available(macOS 10.15, *)
+extension UserJotMacWebViewController: WKUIDelegate {
+    @MainActor
+    func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor @Sendable ([URL]?) -> Void) {
+        let openPanel = NSOpenPanel()
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = parameters.allowsDirectories
+        openPanel.allowsMultipleSelection = parameters.allowsMultipleSelection
+
+        openPanel.begin { response in
+            if response == .OK {
+                completionHandler(openPanel.urls)
+            } else {
+                completionHandler(nil)
+            }
+        }
     }
 }
 #endif

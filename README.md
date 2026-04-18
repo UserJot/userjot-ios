@@ -2,7 +2,7 @@
 
 > **Beta Notice**: This SDK is currently in beta (v0.3.0). The API may change before the 1.0 release.
 
-A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and changelog features into your iOS and macOS applications.
+A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and updates features into your iOS and macOS applications.
 
 ## Installation
 
@@ -67,7 +67,7 @@ UserJot.identify(
 
 ### 3. Show UserJot Views
 
-Display feedback, roadmap, or changelog:
+Display feedback, roadmap, or updates:
 
 ```swift
 // Show feedback (default)
@@ -79,8 +79,8 @@ UserJot.showFeedback(board: "feature-requests")
 // Show roadmap
 UserJot.showRoadmap()
 
-// Show changelog
-UserJot.showChangelog()
+// Show updates
+UserJot.showUpdates()
 ```
 
 #### iOS Presentation
@@ -116,7 +116,7 @@ If you prefer to handle the presentation yourself, you can get the URLs:
 // Get URLs for custom WebView implementation
 let feedbackURL = UserJot.feedbackURL()
 let roadmapURL = UserJot.roadmapURL()
-let changelogURL = UserJot.changelogURL()
+let updatesURL = UserJot.updatesURL()
 
 // Use with your own WebView
 if let url = feedbackURL {

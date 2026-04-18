@@ -82,10 +82,9 @@ public class UserJot {
         shared.showWebView(section: .roadmap, presentationStyle: presentationStyle)
     }
 
-    /// Show the changelog modal
-    /// - Parameter presentationStyle: How to present the view (sheet or mediumSheet)
-    public static func showChangelog(presentationStyle: PresentationStyle = .sheet) {
-        shared.showWebView(section: .changelog, presentationStyle: presentationStyle)
+    /// Show the updates modal
+    public static func showUpdates(presentationStyle: PresentationStyle = .sheet) {
+        shared.showWebView(section: .updates, presentationStyle: presentationStyle)
     }
 
     /// Get the feedback URL (for custom implementations)
@@ -101,10 +100,10 @@ public class UserJot {
         return shared.buildURL(section: .roadmap)
     }
 
-    /// Get the changelog URL (for custom implementations)
-    /// - Returns: The complete URL with authentication token
-    public static func changelogURL() -> URL? {
-        return shared.buildURL(section: .changelog)
+    /// Get the updates URL (for custom implementations)
+    /// - Returns: The URL to the updates section
+    public static func updatesURL() -> URL? {
+        return shared.buildURL(section: .updates)
     }
 
     // MARK: - Private Methods
@@ -140,11 +139,11 @@ public class UserJot {
         var path: String
         switch section {
         case .feedback(let board):
-            path = board != nil ? "/boards/\(board!)" : ""
+            path = board != nil ? "/board/\(board!)" : ""
         case .roadmap:
             path = "/roadmap"
-        case .changelog:
-            path = "/changelog"
+        case .updates:
+            path = "/updates"
         }
 
         // Add authentication token if user is identified
@@ -310,7 +309,7 @@ extension UserJot {
     enum Section {
         case feedback(board: String?)
         case roadmap
-        case changelog
+        case updates
     }
 
     public enum PresentationStyle: Sendable {

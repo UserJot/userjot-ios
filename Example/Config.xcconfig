@@ -1,0 +1,8 @@
+// Build settings for the example app. Put your project ID in Local.xcconfig next to this file;
+// git ignores it, so test project IDs stay out of the public repo.
+//
+//     USERJOT_PROJECT_ID = your-project-id
+
+USERJOT_PROJECT_ID =
+
+#include? "Local.xcconfig"

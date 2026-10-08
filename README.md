@@ -178,6 +178,18 @@ UserJot.identify(
 )
 ```
 
+## Example App
+
+`Example/UserJotExample.xcodeproj` runs the SDK from this repo on iOS and macOS, with controls to set up, identify a user, and show feedback, roadmap, and changelog. Open that project rather than `Package.swift`; the package appears inside it, so you can edit `Sources/` and run from one window.
+
+Give it a test project to load by creating `Example/Local.xcconfig`, which git ignores:
+
+```
+USERJOT_PROJECT_ID = your-project-id
+```
+
+The example needs Xcode 16 or later, iOS 17, and macOS 14. The simulator and the Mac run it as is; a physical iPhone or iPad needs your team in Signing & Capabilities and a bundle ID of your own.
+
 ## Requirements
 
 - iOS 13.0+ / macOS 10.15+

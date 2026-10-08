@@ -11,4 +11,12 @@
 USERJOT_PROJECT_ID =
 USERJOT_WIDGET_BASE_URL =
 
+// Set here rather than on the xcodebuild command line, where it would also reach the UserJot package.
+// Xcode 26 builds package dependencies with -suppress-warnings, and the two flags cannot be combined.
+SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+
+// Set here rather than on the xcodebuild command line, which would also reach the UserJot package.
+// Xcode 26 builds package dependencies with -suppress-warnings, and the two flags conflict.
+SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+
 #include? "Local.xcconfig"

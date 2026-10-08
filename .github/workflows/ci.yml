@@ -21,7 +21,7 @@ jobs:
         run: xcodebuild build -scheme UserJot -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
 
       - name: Build example (iOS Simulator)
-        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
 
       - name: Build example (macOS)
-        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO

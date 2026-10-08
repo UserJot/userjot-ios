@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Format
+        run: xcrun swift-format lint --strict --recursive --configuration .swift-format Sources Tests Example/UserJotExample
+
+      - name: Build and test (macOS)
+        run: swift build -Xswiftc -warnings-as-errors && swift test
+
+      - name: Build package (iOS Simulator)
+        run: xcodebuild build -scheme UserJot -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+
+      - name: Build example (iOS Simulator)
+        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+
+      - name: Build example (macOS)
+        run: xcodebuild build -project Example/UserJotExample.xcodeproj -scheme UserJotExample -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES

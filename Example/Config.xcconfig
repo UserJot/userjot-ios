@@ -2,7 +2,13 @@
 // git ignores it, so test project IDs stay out of the public repo.
 //
 //     USERJOT_PROJECT_ID = your-project-id
+//
+// To use a local server, also set the widget host. xcconfig reads "//" as a comment, so write the
+// URL with $() between the slashes:
+//
+//     USERJOT_WIDGET_BASE_URL = https:/$()/widget.userjot.localhost
 
 USERJOT_PROJECT_ID =
+USERJOT_WIDGET_BASE_URL =
 
 #include? "Local.xcconfig"

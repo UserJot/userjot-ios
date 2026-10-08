@@ -4,5 +4,7 @@
 <dict>
 	<key>UserJotProjectID</key>
 	<string>$(USERJOT_PROJECT_ID)</string>
+	<key>UserJotWidgetBaseURL</key>
+	<string>$(USERJOT_WIDGET_BASE_URL)</string>
 </dict>
 </plist>

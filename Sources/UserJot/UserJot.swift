@@ -16,7 +16,7 @@ public final class UserJot {
     /** Matches the git tag; bump it with each release. The web views send it in their user agent. */
     nonisolated public static let version = "0.4.0"
 
-    /** Host of the Hello route. Pass http://api.userjot.localhost to develop against a local server. */
+    /** Host of the Hello route. Pass https://widget.userjot.localhost to develop against a local server. */
     nonisolated public static let defaultWidgetBaseURL = URL(
         string: "https://widget.userjot.com")!  // a literal URL always parses
 

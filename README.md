@@ -1,8 +1,8 @@
 # UserJot Swift SDK
 
-> **Beta Notice**: This SDK is currently in beta (v0.3.0). The API may change before the 1.0 release.
+> **Beta Notice**: This SDK is currently in beta (v0.4.0). The API may change before the 1.0 release.
 
-A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and changelog features into your iOS and macOS applications.
+A Swift SDK for integrating [UserJot](https://userjot.com) feedback, roadmap, and updates into your iOS and macOS applications.
 
 ## Installation
 
@@ -12,7 +12,7 @@ Add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/UserJot/userjot-ios", from: "0.3.0")
+    .package(url: "https://github.com/UserJot/userjot-ios", from: "0.4.0")
 ]
 ```
 
@@ -67,7 +67,7 @@ UserJot.identify(
 
 ### 3. Show UserJot Views
 
-Display feedback, roadmap, or changelog:
+Display feedback, roadmap, or updates:
 
 ```swift
 // Show feedback (default)
@@ -79,9 +79,11 @@ UserJot.showFeedback(board: "feature-requests")
 // Show roadmap
 UserJot.showRoadmap()
 
-// Show changelog
-UserJot.showChangelog()
+// Show updates
+UserJot.showUpdates()
 ```
+
+`setup` loads your board's address in the background. A show call made before that finishes waits for it, then presents. If the address could not be loaded (for example, the device was offline at launch), the next call tries again.
 
 #### iOS Presentation
 
@@ -110,13 +112,13 @@ On macOS, views are presented in a separate resizable window. The window opens c
 
 ### Custom Implementation
 
-If you prefer to handle the presentation yourself, you can get the URLs:
+If you prefer to handle the presentation yourself, you can get the URLs. They are `async` because they wait for the board's address, and they return `nil` when the board is unavailable:
 
 ```swift
 // Get URLs for custom WebView implementation
-let feedbackURL = UserJot.feedbackURL()
-let roadmapURL = UserJot.roadmapURL()
-let changelogURL = UserJot.changelogURL()
+let feedbackURL = await UserJot.feedbackURL()
+let roadmapURL = await UserJot.roadmapURL()
+let updatesURL = await UserJot.updatesURL()
 
 // Use with your own WebView
 if let url = feedbackURL {
@@ -178,9 +180,16 @@ UserJot.identify(
 )
 ```
 
+## Migrating from 0.3
+
+- `showChangelog()` is now `showUpdates()`, and `changelogURL()` is now `updatesURL()`. The old names still work with a deprecation warning and an Xcode fix-it, and will be removed in 1.0.
+- `feedbackURL(board:)`, `roadmapURL()`, and `updatesURL()` are `async`. Add `await` at each call site.
+- `UserJot` runs on the main actor. Calls from UI code need no change; call it from a background task with `await`.
+- The minimum platforms are now iOS 15 and macOS 12.
+
 ## Example App
 
-`Example/UserJotExample.xcodeproj` runs the SDK from this repo on iOS and macOS, with controls to set up, identify a user, and show feedback, roadmap, and changelog. Open that project rather than `Package.swift`; the package appears inside it, so you can edit `Sources/` and run from one window.
+`Example/UserJotExample.xcodeproj` runs the SDK from this repo on iOS and macOS, with controls to set up, identify a user, and show feedback, roadmap, and updates. Open that project rather than `Package.swift`; the package appears inside it, so you can edit `Sources/` and run from one window.
 
 Give it a test project to load by creating `Example/Local.xcconfig`, which git ignores:
 
@@ -188,13 +197,29 @@ Give it a test project to load by creating `Example/Local.xcconfig`, which git i
 USERJOT_PROJECT_ID = your-project-id
 ```
 
-The example needs Xcode 16 or later, iOS 17, and macOS 14. The simulator and the Mac run it as is; a physical iPhone or iPad needs your team in Signing & Capabilities and a bundle ID of your own.
+To run it against a local UserJot server, also set the widget host there. xcconfig reads `//` as a comment, so write the URL with `$()` between the slashes:
+
+```
+USERJOT_WIDGET_BASE_URL = https:/$()/widget.userjot.localhost
+```
+
+The simulator rejects the local server's certificate until it trusts Caddy's local CA. With the simulator booted, run:
+
+```
+xcrun simctl keychain booted add-root-cert "$HOME/Library/Application Support/Caddy/pki/authorities/local/root.crt"
+```
+
+The example needs Xcode 16.3 or later, iOS 17, and macOS 14. The simulator and the Mac run it as is; a physical iPhone or iPad needs your team in Signing & Capabilities and a bundle ID of your own.
+
+## Releasing
+
+Bump `UserJot.version` in `Sources/UserJot/UserJot.swift`, update the version in this README, then tag the commit `vX.Y.Z` and push the tag.
 
 ## Requirements
 
-- iOS 13.0+ / macOS 10.15+
-- Swift 5.5+
-- Xcode 13.0+
+- iOS 15.0+ / macOS 12.0+
+- Swift 6.1+
+- Xcode 16.3+
 
 ## Features
 

@@ -213,7 +213,7 @@ The example needs Xcode 16.3 or later, iOS 17, and macOS 14. The simulator and t
 
 ## Releasing
 
-Bump `UserJot.version` in `Sources/UserJot/UserJot.swift`, update the version in this README, then tag the commit `vX.Y.Z` and push the tag.
+Bump `UserJot.version` in `Sources/UserJot/UserJot.swift`, update the version in this README, then tag the commit `X.Y.Z` (no `v`, matching the existing tags) and push the tag.
 
 ## Requirements
 
